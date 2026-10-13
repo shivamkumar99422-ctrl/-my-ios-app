@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>GNIOT - Student Hostel OutPass</title>
+  
+  <style>
+    /* -------------------------------------------------------------
+       CORE RESETS & IOS WEBKIT NORMALIZATION
+       ------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      background-color: #f1f4f8;
+    }
+
+    body {
+      background-color: #f1f4f8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #212529;
+      line-height: 1.4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      position: relative;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Container */
+    .portal-container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 10px 12px 24px 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* -------------------------------------------------------------
+       HEADER & NAVIGATION
+       ------------------------------------------------------------- */
+    .gniot-header {
+      background: linear-gradient(180deg, #024ba1 0%, #00367d 100%);
+      color: #ffffff;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .brand-logo-badge {
+      width: 42px;
+      height: 42px;
+      background: #e8a825;
+      border-radius: 8px;
+      border: 1.5px solid #ffde6b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .brand-logo-text {
+      font-size: 7.5px;
+      font-weight: 900;
+      color: #002c6b;
+      letter-spacing: -0.2px;
+      margin-top: 1px;
+      line-height: 1;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+    }
+    .btn-logout:active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .nav-toggle-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 4px;
+      padding: 6px 9px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+    .nav-toggle-btn:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* -------------------------------------------------------------
+       LOGIN VIEW STYLES
+       ------------------------------------------------------------- */
+    #loginView {
+      padding: 16px 14px 28px 14px;
+      max-width: 440px;
+      margin: 20px auto;
+      width: 100%;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #d8e0ea;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .login-card-header {
+      background: #004595;
+      color: #ffffff;
+      padding: 16px 14px;
+      text-align: center;
+    }
+
+    .login-card-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .login-card-header p {
+      font-size: 11.5px;
+      color: #e0e7ff;
+    }
+
+    .login-card-body {
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .btn-login-submit {
+      width: 100%;
+      background: #0d6efd;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 11px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
+      touch-action: manipulation;
+    }
+    .btn-login-submit:active {
+      background: #0b5ed7;
+      transform: scale(0.99);
+    }
+
+    /* -------------------------------------------------------------
+       BREADCRUMB CAPSULE
+       ------------------------------------------------------------- */
+    .breadcrumb-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 5px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin: 10px 0 12px 0;
+      font-size: 12.5px;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+    }
+    .breadcrumb-pill a {
+      color: #034da2;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .breadcrumb-arrow {
+      margin: 0 7px;
+      color: #94a3b8;
+      font-size: 11px;
+    }
+
+    /* -------------------------------------------------------------
+       4 STAT / DASHBOARD CARDS
+       ------------------------------------------------------------- */
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .dash-card {
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      border-top: 3.5px solid #d49b17;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      color: #ffffff;
+    }
+
+    .card-profile {
+      background: linear-gradient(180deg, #0352b2 0%, #00377e 100%);
+    }
+    .card-placement {
+      background: linear-gradient(180deg, #18864d 0%, #11683a 100%);
+    }
+    .card-scholarship {
+      background: linear-gradient(180deg, #de6e0e 0%, #ab4e02 100%);
+    }
+    .card-account {
+      background: linear-gradient(180deg, #d32029 0%, #9f121a 100%);
+    }
+
+    .dash-card-body {
+      padding: 14px 16px 12px 16px;
+      position: relative;
+      z-index: 2;
+    }
+    .dash-card-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin: 0;
+    }
+
+    .card-watermark {
+      position: absolute;
+      right: 14px;
+      top: 6px;
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .dash-card-footer {
+      background-color: rgba(0, 0, 0, 0.22);
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      touch-action: manipulation;
+    }
+    .dash-card-footer:active {
+      background-color: rgba(0, 0, 0, 0.35);
+    }
+
+    /* -------------------------------------------------------------
+       MAIN PORTAL CONTAINER
+       ------------------------------------------------------------- */
+    .main-section-card {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #d8e0ea;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      overflow: hidden;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .main-banner-header {
+      background: #004595;
+      color: #ffffff;
+      padding: 13px 12px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+    .main-banner-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    .main-card-content {
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sub-panel {
+      background: #ffffff;
+      border: 1px solid #dce2ea;
+      border-radius: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sub-panel-head {
+      background: #f7f8fa;
+      border-bottom: 1px solid #dce2ea;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sub-panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    /* Student Profile details */
+    .student-profile-body {
+      padding: 14px 12px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .avatar-question-box {
+      width: 50px;
+      height: 50px;
+      border: 1.5px solid #d1d5db;
+      background: #ffffff;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .avatar-q-mark {
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .student-info-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 12px;
+      color: #1e293b;
+      padding-left: 2px;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      word-break: break-word;
+    }
+    .info-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .info-label {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* -------------------------------------------------------------
+       CRITICAL: APPLY BUTTON
+       ------------------------------------------------------------- */
+    .apply-section-body {
+      padding: 16px 14px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .btn-apply-outpass {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d6efd;
+      color: #ffffff !important;
+      border: 1px solid #0d6efd;
+      border-radius: 5px;
+      padding: 10px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.2;
+      min-height: 44px;
+      min-width: 150px;
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      box-shadow: 0 2px 4px rgba(13, 110, 253, 0.35);
+      position: relative;
+      z-index: 15;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .btn-apply-outpass:active {
+      background: #0b5ed7 !important;
+      border-color: #0a58ca;
+      transform: scale(0.97);
+    }
+
+    /* -------------------------------------------------------------
+       TABLE FOR OUTPASS HISTORY
+       ------------------------------------------------------------- */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      padding: 10px;
+    }
+
+    .history-grid-table {
+      width: 100%;
+      min-width: 480px;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      border: 1px solid #dce2ea;
+    }
+
+    .history-grid-table th {
+      background: #003682;
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 6px 6px;
+      border: 1px solid #ffffff;
+      text-align: left;
+      line-height: 1.25;
+      vertical-align: middle;
+      white-space: normal;
+    }
+
+    .history-grid-table td {
+      border: 1px solid #dee2e6;
+      padding: 6px 6px;
+      font-size: 10.5px;
+      line-height: 1.35;
+      color: #1e293b;
+      vertical-align: middle;
+      background: #ffffff;
+    }
+
+    .history-grid-table tr:nth-child(even) td {
+      background: #fbfbfb;
+    }
+
+    .new-pass-row td {
+      animation: highlightFade 3s ease-out;
+    }
+    @keyframes highlightFade {
+      0% { background-color: #d1fae5; }
+      100% { background-color: #ffffff; }
+    }
+
+    .clickable-return-status {
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: default;
+    }
+
+    .empty-history-cell {
+      text-align: center !important;
+      padding: 16px 8px !important;
+      color: #64748b !important;
+      font-style: italic;
+    }
+
+    /* -------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------- */
+    .gniot-footer {
+      background: #004595;
+      color: #f7c331;
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 10.5px;
+      line-height: 1.5;
+      border-top: 1px solid #003777;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-highlight {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .footer-link {
+      color: #f7c331;
+      text-decoration: underline;
+    }
+
+    /* -------------------------------------------------------------
+       FIXED MODAL SYSTEM
+       ------------------------------------------------------------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 999999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      touch-action: pan-y;
+    }
+
+    .modal-backdrop.is-open {
+      display: flex !important;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: modalSlide 0.2s ease-out;
+      position: relative;
+      pointer-events: auto !important;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header-bar {
+      background: #004595;
+      color: #ffffff;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .modal-close-icon {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 8px;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+
+    .modal-form-content {
+      padding: 14px;
+      font-size: 12.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-group-label {
+      display: block;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .form-control {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 9px 10px;
+      font-size: 15px;
+      background: #ffffff;
+      color: #1e293b;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    @media (min-width: 600px) {
+      .form-control {
+        font-size: 13.5px;
+      }
+    }
+    .form-control:focus {
+      border-color: #004595;
+    }
+
+    .grid-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-footer-bar {
+      border-top: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: #f8fafc;
+    }
+    .btn-cancel {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      border-radius: 4px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 40px;
+      touch-action: manipulation;
+    }
+    .btn-submit-pass {
+      background: #004595;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 40px;
+      touch-action: manipulation;
+    }
+    .btn-submit-pass:active {
+      background: #00367d;
+    }
+
+    /* -------------------------------------------------------------
+       TOAST POPUP
+       ------------------------------------------------------------- */
+    .toast-box {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111827;
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 25px;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .toast-box.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <!-- Sticky Royal Blue Header -->
+    <header class="gniot-header">
+      <div style="display: flex; align-items: center;">
+        <div class="brand-logo-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#002c6b">
+            <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"/>
+          </svg>
+          <span class="brand-logo-text">GNIOT</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" id="btnLogout" class="btn-logout" onclick="handleLogout()">Logout</button>
+        <button type="button" class="nav-toggle-btn" onclick="showNotification('Main Menu opened')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: LOGIN PORTAL -->
+    <main id="loginView">
+      <div class="login-card">
+        <div class="login-card-header">
+          <h2>Hostel OutPass Login</h2>
+          <p>Please enter your student details to proceed</p>
+        </div>
+        <form id="studentLoginForm" onsubmit="handleLoginSubmit(event)" class="login-card-body">
+          <div>
+            <label class="form-group-label" for="loginStudentId">Student ID <span style="color: #ef4444;">*</span></label>
+            <input type="text" id="loginStudentId" class="form-control" required placeholder="e.g. Student Id">
+          </div>
+          <div>
+            <label class="form-group-label" for="loginStudentName">Full Name <span style="color: #ef4444;">*</span></label>
+            <input type="text" id="loginStudentName" class="form-control" required placeholder="e.g. Enter Name">
+          </div>
+          <div>
+            <label class="form-group-label" for="loginMobile">Mobile Number <span style="color: #ef4444;">*</span></label>
+            <input type="tel" id="loginMobile" class="form-control" required placeholder="e.g. Phone Number">
+          </div>
+          <button type="submit" class="btn-login-submit">Login &amp; Enter Portal</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- VIEW 2: OUTPASS MAIN PORTAL -->
+    <main id="portalView" class="portal-container" style="display: none;">
+      <!-- Breadcrumb Capsule -->
+      <div class="breadcrumb-pill">
+        <a href="javascript:void(0)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#034da2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <span class="breadcrumb-arrow">›</span>
+        <span>My Dashboard</span>
+      </div>
+
+      <!-- 4 Action / Stat Cards -->
+      <section class="cards-stack">
+        <div class="dash-card card-profile">
+          <svg class="card-watermark" width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <div class="dash-card-body">
+            <h2 class="dash-card-title">My Profile</h2>
+          </div>
+          <div class="dash-card-footer" onclick="showNotification('Opening Profile Details')">
+            <span>View Details</span>
+            <span>➜</span>
+          </div>
+        </div>
+
+        <div class="dash-card card-placement">
+          <svg class="card-watermark" width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <div class="dash-card-body">
+            <h2 class="dash-card-title">Placement Notice</h2>
+          </div>
+          <div class="dash-card-footer" onclick="showNotification('Opening Placement Notices')">
+            <span>View Details</span>
+            <span>➜</span>
+          </div>
+        </div>
+
+        <div class="dash-card card-scholarship">
+          <svg class="card-watermark" width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <div class="dash-card-body">
+            <h2 class="dash-card-title">Scholarship</h2>
+          </div>
+          <div class="dash-card-footer" onclick="showNotification('Opening Scholarship Info')">
+            <span>View Details</span>
+            <span>➜</span>
+          </div>
+        </div>
+
+        <div class="dash-card card-account">
+          <div class="card-watermark" style="font-size: 58px; font-weight: 900; line-height: 1; top: 0; right: 12px; opacity: 0.22;">
+            Rs
+          </div>
+          <div class="dash-card-body">
+            <h2 class="dash-card-title">Account</h2>
+          </div>
+          <div class="dash-card-footer" onclick="showNotification('Opening Account Details')">
+            <span>View Details</span>
+            <span>➜</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Portal Container -->
+      <section class="main-section-card">
+        <div class="main-banner-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <h1 class="main-banner-title">Student Hostel OutPass</h1>
+        </div>
+
+        <div class="main-card-content">
+          <!-- SECTION 1: Student Profile -->
+          <div class="sub-panel">
+            <div class="sub-panel-head">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.2">
+                <rect x="2" y="3" width="20" height="18" rx="2"></rect>
+                <line x1="8" y1="21" x2="8" y2="3"></line>
+                <line x1="12" y1="7" x2="18" y2="7"></line>
+                <line x1="12" y1="11" x2="18" y2="11"></line>
+              </svg>
+              <h3 class="sub-panel-title">Student Profile</h3>
+            </div>
+
+            <div class="student-profile-body">
+              <div class="avatar-question-box">
+                <div class="avatar-q-mark">?</div>
+              </div>
+
+              <div class="student-info-list">
+                <div class="info-row">
+                  <span class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e69b00">
+                      <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 3h8v2H8V9zm0 4h5v2H8v-2z"/>
+                    </svg>
+                  </span>
+                  <span><span class="info-label">Student ID:</span> <span id="displayStudentId">--</span></span>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e69b00">
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                  </span>
+                  <span><span class="info-label">Name:</span> <span id="displayName">--</span></span>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e69b00">
+                      <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
+                    </svg>
+                  </span>
+                  <span><span class="info-label">Class:</span> Computer Science-AI-ML - 1st Year</span>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e69b00">
+                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                  </span>
+                  <span><span class="info-label">Mobile:</span> <span id="displayMobile">--</span></span>
+                </div>
+
+                <div class="info-row">
+                  <span class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e69b00">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                  </span>
+                  <span><span class="info-label">Email:</span> <span id="displayEmail">--</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: Hostel OutPass Action -->
+          <div class="sub-panel">
+            <div class="sub-panel-head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.2">
+                <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                <line x1="9" y1="22" x2="9" y2="2"></line>
+                <path d="M14 12h2"></path>
+                <path d="M14 8h2"></path>
+                <path d="M14 16h2"></path>
+              </svg>
+              <h3 class="sub-panel-title">Hostel OutPass</h3>
+            </div>
+            <div class="apply-section-body">
+              <button 
+                type="button" 
+                id="btnApplyOutpass" 
+                class="btn-apply-outpass" 
+                onclick="handleOpenModal(event)"
+                aria-label="Apply OutPass">
+                Apply OutPass
+              </button>
+            </div>
+          </div>
+
+          <!-- SECTION 3: OutPass History Table -->
+          <div class="sub-panel">
+            <div class="sub-panel-head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.2">
+                <path d="M12 8v4l3 3"></path>
+                <circle cx="12" cy="12" r="9"></circle>
+              </svg>
+              <h3 class="sub-panel-title">OutPass History</h3>
+            </div>
+            
+            <div class="table-container">
+              <table class="history-grid-table">
+                <thead>
+                  <tr>
+                    <th style="width: 17%;">Apply<br>Date</th>
+                    <th style="width: 21%;">Reason</th>
+                    <th style="width: 16%;">Expected<br>Return<br>Date</th>
+                    <th style="width: 15%;">Expected<br>Return<br>Time</th>
+                    <th style="width: 16%;">Approved<br>Date</th>
+                    <th style="width: 15%;">Return<br>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="outpassTableBody">
+                  <!-- User-specific history will render here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="gniot-footer">
+    <div style="max-width: 580px; margin: 0 auto;">
+      <p style="margin-bottom: 2px;">
+        Copyright © 2026 GNIOT Group of Institutions &nbsp;|&nbsp; Designed &amp; Developed by:
+        <span class="footer-highlight">Er. Ramesh Bhardwaj</span>
+        <span>(Group Head – ERP | Sr. Engineer | Full-Stack Developer)</span>
+      </p>
+      <p>
+        <a href="tel:8860606695" class="footer-link">8860606695</a>
+        &nbsp;|&nbsp;
+        <a href="mailto:erphead@gniot.net.in" class="footer-link">erphead@gniot.net.in</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- MODAL: Apply Hostel OutPass Form -->
+  <div id="applyModal" class="modal-backdrop" onclick="handleBackdropClick(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fde047" stroke-width="2.2">
+            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+            <line x1="9" y1="22" x2="9" y2="2"></line>
+            <path d="M14 12h2"></path>
+          </svg>
+          <span>Apply Hostel OutPass</span>
+        </div>
+        <button type="button" class="modal-close-icon" onclick="closeApplyModal()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="outpassForm" onsubmit="submitNewOutPass(event)">
+        <div class="modal-form-content">
+          <div style="background: #eef5ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 7px 9px; font-size: 11.5px; color: #1e3a8a;">
+            <strong>Student ID:</strong> <span id="modalStudentId">--</span> &nbsp;|&nbsp; <strong>Name:</strong> <span id="modalStudentName">--</span>
+          </div>
+
+          <div>
+            <label class="form-group-label" for="outpassType">OutPass Type</label>
+            <select id="outpassType" class="form-control" onchange="updateReasonSuggestions(this.value)">
+              <option value="Local Outing">Local Outing (Normal)</option>
+              <option value="Home Visit">Home Visit (Leave)</option>
+              <option value="Medical / Hospital">Medical Emergency / Hospital</option>
+              <option value="Market / Personal">Market / Shopping</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-group-label" for="outpassReason">Reason <span style="color: #ef4444;">*</span></label>
+            <input type="text" id="outpassReason" required class="form-control" value="Grocery Shopping" placeholder="Enter reason for outpass">
+          </div>
+
+          <div class="grid-two-col">
+            <div>
+              <label class="form-group-label" for="returnDate">Expected Return Date <span style="color: #ef4444;">*</span></label>
+              <input type="date" id="returnDate" required class="form-control">
+            </div>
+            <div>
+              <label class="form-group-label" for="returnTime">Expected Return Time <span style="color: #ef4444;">*</span></label>
+              <input type="time" id="returnTime" required value="21:00" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-cancel" onclick="closeApplyModal()">Cancel</button>
+          <button type="submit" class="btn-submit-pass">Submit &amp; Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toastBox" class="toast-box">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span id="toastMessage">Outpass Applied Successfully</span>
+  </div>
+
+  <script>
+    const STORAGE_KEY_USER = 'gniot_logged_user';
+
+    // Format helpers
+    function formatDateYMD(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    }
+
+    function formatFullTimestamp(d) {
+      const ymd = formatDateYMD(d);
+      const hours = String(d.getHours()).padStart(2, '0');
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      const secs = String(d.getSeconds()).padStart(2, '0');
+      return ymd + ' ' + hours + ':' + mins + ':' + secs;
+    }
+
+    function showNotification(msg) {
+      const toast = document.getElementById('toastBox');
+      const text = document.getElementById('toastMessage');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
+
+    // USER-SPECIFIC STORAGE SYSTEM
+    function getUserStorageKey(studentId) {
+      return 'gniot_outpass_history_' + String(studentId).trim();
+    }
+
+    function getLoggedUser() {
+      const stored = localStorage.getItem(STORAGE_KEY_USER);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch(e) {
+          console.error(e);
+        }
+      }
+      return null;
+    }
+
+    function setLoggedUser(user) {
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
+    }
+
+    // Retrieve only current logged-in user's history
+    function getUserOutpasses(studentId) {
+      if (!studentId) return [];
+      const key = getUserStorageKey(studentId);
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      
+      // Default initial record only for demo student ID 2600202
+      if (String(studentId).trim() === '2600202') {
+        const demoDefaults = [
+          {
+            applyDate: '2026-10-11 18:00:47',
+            reason: 'Grocery Shopping',
+            returnDate: '2026-10-11',
+            returnTime: '21:00:00',
+            approvedDate: '2026-10-11 18:04:49',
+            returnStatus: 'Not Returned'
+          },
+          {
+            applyDate: '2026-10-10 13:12:47',
+            reason: 'Visiting Family',
+            returnDate: '2026-10-10',
+            returnTime: '21:00:00',
+            approvedDate: '2026-10-10 13:24:13',
+            returnStatus: 'Not Returned'
+          },
+          {
+            applyDate: '2026-10-03 13:09:59',
+            reason: 'Hospital Visit or Treatment',
+            returnDate: '2026-10-09',
+            returnTime: '21:00:00',
+            approvedDate: '2026-10-03 13:11:15',
+            returnStatus: 'Not Returned'
+          }
+        ];
+        saveUserOutpasses(studentId, demoDefaults);
+        return demoDefaults;
+      }
+      return [];
+    }
+
+    function saveUserOutpasses(studentId, list) {
+      if (!studentId) return;
+      const key = getUserStorageKey(studentId);
+      localStorage.setItem(key, JSON.stringify(list));
+    }
+
+    // Apply Student Data into HTML
+    function applyUserDataToUI(user) {
+      if (!user) return;
+      const formattedName = user.name.toUpperCase();
+      const cleanEmailName = user.name.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+
+      document.getElementById('displayStudentId').textContent = user.studentId;
+      document.getElementById('displayName').textContent = formattedName;
+      document.getElementById('displayMobile').textContent = user.mobile;
+      document.getElementById('displayEmail').textContent = `${cleanEmailName}@GMAIL.COM`;
+
+      document.getElementById('modalStudentId').textContent = user.studentId;
+      document.getElementById('modalStudentName').textContent = formattedName;
+    }
+
+    // View Switching
+    function switchToPortal(user) {
+      applyUserDataToUI(user);
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('portalView').style.display = 'block';
+      document.getElementById('btnLogout').style.display = 'inline-block';
+      renderOutpassesTable(false);
+    }
+
+    function switchToLogin() {
+      document.getElementById('loginView').style.display = 'block';
+      document.getElementById('portalView').style.display = 'none';
+      document.getElementById('btnLogout').style.display = 'none';
+      document.getElementById('studentLoginForm').reset();
+    }
+
+    function handleLoginSubmit(e) {
+      if (e) e.preventDefault();
+      const studentId = document.getElementById('loginStudentId').value.trim();
+      const name = document.getElementById('loginStudentName').value.trim();
+      const mobile = document.getElementById('loginMobile').value.trim();
+
+      if (!studentId || !name || !mobile) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      const userData = { studentId, name, mobile };
+      setLoggedUser(userData);
+      switchToPortal(userData);
+      showNotification('Welcome back, ' + name + '!');
+    }
+
+    function handleLogout() {
+      localStorage.removeItem(STORAGE_KEY_USER);
+      switchToLogin();
+      showNotification('Logged out successfully');
+    }
+
+    // Hidden Return Mark Action (User isolated)
+    function closeOutpassReturn(index) {
+      const currentUser = getLoggedUser();
+      if (!currentUser) return;
+
+      const list = getUserOutpasses(currentUser.studentId);
+      if (!list[index]) return;
+
+      const closingTimestamp = formatFullTimestamp(new Date());
+      list[index].returnStatus = closingTimestamp;
+      saveUserOutpasses(currentUser.studentId, list);
+
+      renderOutpassesTable(false);
+      showNotification('OutPass Marked Returned: ' + closingTimestamp);
+    }
+
+    // Render Table for active logged in user only
+    function renderOutpassesTable(highlightFirst = false) {
+      const tbody = document.getElementById('outpassTableBody');
+      if (!tbody) return;
+
+      const currentUser = getLoggedUser();
+      if (!currentUser) {
+        tbody.innerHTML = '';
+        return;
+      }
+
+      const list = getUserOutpasses(currentUser.studentId);
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `<td colspan="6" class="empty-history-cell">No outpass applied yet. Click "Apply OutPass" to submit a request.</td>`;
+        tbody.appendChild(emptyTr);
+        return;
+      }
+
+      list.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        if (highlightFirst && index === 0) {
+          tr.className = 'new-pass-row';
+        }
+
+        const isPending = (item.returnStatus === 'Not Returned');
+
+        tr.innerHTML = `
+          <td>${item.applyDate}</td>
+          <td>${item.reason}</td>
+          <td>${item.returnDate}</td>
+          <td>${item.returnTime}</td>
+          <td style="color: #000000; font-weight: 600;">${item.approvedDate}</td>
+          <td id="return-cell-${index}" class="${isPending ? 'clickable-return-status' : ''}">${item.returnStatus}</td>
+        `;
+        tbody.appendChild(tr);
+
+        if (isPending) {
+          const cell = tr.querySelector(`#return-cell-${index}`);
+          if (cell) {
+            cell.addEventListener('dblclick', () => {
+              closeOutpassReturn(index);
+            });
+
+            let pressTimer = null;
+            cell.addEventListener('touchstart', () => {
+              pressTimer = setTimeout(() => {
+                closeOutpassReturn(index);
+              }, 950);
+            }, { passive: true });
+
+            const cancelPress = () => {
+              if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+              }
+            };
+            cell.addEventListener('touchend', cancelPress);
+            cell.addEventListener('touchmove', cancelPress);
+          }
+        }
+      });
+    }
+
+    // Modal Operations
+    function openApplyModal() {
+      const modal = document.getElementById('applyModal');
+      const dateField = document.getElementById('returnDate');
+      
+      if (dateField && !dateField.value) {
+        dateField.value = formatDateYMD(new Date());
+      }
+      
+      if (modal) {
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeApplyModal() {
+      const modal = document.getElementById('applyModal');
+      if (modal) {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target && e.target.id === 'applyModal') {
+        closeApplyModal();
+      }
+    }
+
+    function handleOpenModal(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      openApplyModal();
+    }
+
+    function updateReasonSuggestions(type) {
+      const reasonInput = document.getElementById('outpassReason');
+      if (!reasonInput) return;
+      if (type === 'Local Outing') reasonInput.value = 'Grocery Shopping';
+      else if (type === 'Home Visit') reasonInput.value = 'Visiting Family';
+      else if (type === 'Medical / Hospital') reasonInput.value = 'Hospital Visit or Treatment';
+      else if (type === 'Market / Personal') reasonInput.value = 'Personal Work & Shopping';
+    }
+
+    // Submit Outpass: Saves uniquely under the active user's student ID
+    function submitNewOutPass(e) {
+      if (e) e.preventDefault();
+
+      const currentUser = getLoggedUser();
+      if (!currentUser) {
+        alert('Please login first.');
+        switchToLogin();
+        return;
+      }
+
+      const reasonField = document.getElementById('outpassReason');
+      const returnDateField = document.getElementById('returnDate');
+      const returnTimeField = document.getElementById('returnTime');
+
+      const reason = (reasonField && reasonField.value.trim()) ? reasonField.value.trim() : 'Grocery Shopping';
+      const returnDate = (returnDateField && returnDateField.value) ? returnDateField.value : formatDateYMD(new Date());
+      let returnTime = (returnTimeField && returnTimeField.value) ? returnTimeField.value : '21:00';
+      if (returnTime.length === 5) returnTime += ':00';
+
+      const now = new Date();
+      const applyTimestamp = formatFullTimestamp(now);
+      const approvedTimestamp = formatFullTimestamp(new Date(now.getTime() + 65000));
+
+      const newPass = {
+        applyDate: applyTimestamp,
+        reason: reason,
+        returnDate: returnDate,
+        returnTime: returnTime,
+        approvedDate: approvedTimestamp,
+        returnStatus: 'Not Returned'
+      };
+
+      // Retrieve and save strictly to this student's history
+      const list = getUserOutpasses(currentUser.studentId);
+      list.unshift(newPass);
+      saveUserOutpasses(currentUser.studentId, list);
+
+      renderOutpassesTable(true);
+
+      closeApplyModal();
+      showNotification('OutPass Approved & Generated!');
+
+      const form = document.getElementById('outpassForm');
+      if (form) form.reset();
+      if (returnDateField) returnDateField.value = formatDateYMD(new Date());
+      if (returnTimeField) returnTimeField.value = '21:00';
+    }
+
+    // App Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      const existingUser = getLoggedUser();
+      if (existingUser) {
+        switchToPortal(existingUser);
+      } else {
+        switchToLogin();
+      }
+
+      const dateField = document.getElementById('returnDate');
+      if (dateField) {
+        dateField.value = formatDateYMD(new Date());
+      }
+
+      const applyBtn = document.getElementById('btnApplyOutpass');
+      if (applyBtn) {
+        applyBtn.addEventListener('click', handleOpenModal, { passive: false });
+        applyBtn.addEventListener('touchend', function(ev) {
+          ev.preventDefault();
+          handleOpenModal(ev);
+        }, { passive: false });
+      }
+    });
+  </script>
+</body>
+</html>
